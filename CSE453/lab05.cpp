@@ -56,6 +56,20 @@ std::string SanitizePath(std::vector<std::string> path_elements) {
         clean_string.erase(3, clean_string.size() - 1);
         path_elements.erase(path_elements.begin());
     }
+      
+    // This IF statemenet detects if the first command refers to a root partition, such as 'C:/'
+    else if (path_elements[0].length() == 3 && path_elements[0][1] == ':' &&
+        (((int)path_elements[0][0] >= (int)'a' && (int)path_elements[0][0] <= (int)'z') ||
+            ((int)path_elements[0][0] >= (int)'A' && (int)path_elements[0][0] <= (int)'Z'))) {
+       
+        // If the letter is lowercase, convert to uppercase
+        if (path_elements[0][0] >= 'a') {
+            path_elements[0][0] -= 32;
+        }
+        // Set the filepath to start with the designated root partition
+        clean_string = path_elements[0];
+        path_elements.erase(path_elements.begin());
+    }
 
     // This loop is designed to iterate through the various commands
     for (int i = 0; i < path_elements.size(); i++) {
